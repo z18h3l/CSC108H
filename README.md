@@ -1,1 +1,78 @@
-# CSC108H
+java c
+Assignment 3
+· Due Nov 26 by 4p.m.
+· Points 8
+CSC108H Assignment 3: Poetry Form. CheckerDue Date: Tuesday, November 26, 2024 before 4:00pmRead this handout thoroughly, especially the tips on how to tackle the assignment.Goals of this Assignment
+· Writing code that uses dictionaries and reads from files.
+· Using top down design to break a problem down into subtasks and implementing helper functions to complete those tasks.
+· Writing unit tests (using pytest ) to check whether a function implementation is correct.
+· Practice reading problem descriptions written in English, together with provided docstring examples, and implementing function bodies to solve the problems.
+· Continue to use Python 3, Wing 101, provided starter code, a checker module, and other tools.Poetry Form. CheckerLimericks, sonnets, haiku, and other forms of poetry each follow prescribed forms that specify the number of lines, the number of syllables on each line, and a rhyme scheme.We're sure that you've all kept yourselves awake wondering if there was a way to have a computer program check whether a poem is a limerick or if it follows some other poetry form. Here is your chance to resolve the question! In this assignment, you will work on a program that reads a poem from a file, determines how to pronounce the poem, counts the number of syllables in each line, and determines whether lines rhyme.DefinitionsIn this section we provide definitions for terms that are used in the handout. All links go to https://dictionary.comLinks to an external site..
+poemLinks to an external site.
+a composition in verse, especially one that is characterized by a highly developed artistic form. and by the use of heightened language and rhythm to express an intensely imaginative interpretation of the subject
+rhymeLinks to an external site.
+a word agreeing with another in terminal sound: Find is a rhyme for mind and womankind
+consonantLinks to an external site.
+(in English articulation) a speech sound produced by occluding with or without releasing (p, b; t, d; k, g), diverting (m, n, ng), or obstructing (f, v; s, z, etc.) the flow of air from the lungs (opposed to vowel)
+vowelLinks to an external site.
+(in English articulation) a speech sound produced without occluding, diverting, or obstructing the flow of air from the lungs (opposed to consonant)
+syllableLinks to an external site.
+an uninterrupted segment of speech consisting of a vowel sound, a diphthong, or a syllabic consonant, with or without preceding or following consonant soundsThere are many vowel sounds. For example, the words freight, fraught, fruit, and fright all contain different vowel sounds — there are far more vowel sounds than there are letters that we use to describe them: a, e, i, o, u, and sometimes y.Poetry Form. Example: LimerickHere is a stupendous work of limerick art. The lines have been numbered and we have highlighted the last word of each line, because those words must rhyme according to the rhyme scheme for limericks.
+1. I wish I had thought of a rhyme
+2. Before I ran all out of time!
+3. I'll sit here instead,
+4. A cloud on my head
+5. That rains 'til I'm covered with slime.Here is a decription of the form. of a limerick. Limericks are five lines long. Lines 1, 2, and 5 each contain eight syllables and the last words on these lines rhyme with each other. Lines 3 and 4 each contain five syllables and the last words rhyme with each other. (There are additional rules about the location and number of stressed vs. unstressed syllables, but we'll ignore those rules for this assignment; we will be counting syllables, but not paying attention to whether they are stressed or unstressed.)The CMU Pronouncing DictionaryTo determine whether or not two words rhyme, we will use data that describe how to pronounce words.The Carnegie Mellon University Pronouncing DictionaryLinks to an external site. describes how to pronounce words. Here is the entry for DAVID: D EY1 V IH0 D. There are five phonemes in David, namely 'D', 'EY1', 'V', 'IH0', and 'D'. Each phoneme describes a sound. The sounds are either vowel sounds or consonant sounds. We will refer to phonemes that describe vowel sounds as vowel phonemes, and similarly for consonants.The phonemes were defined in a project called ArpabetLinks to an external site. that was created by the Advanced Research Projects Agency (ARPA)Links to an external site. back in the 1970's.One can download a text file containing the CMU Pronouncing Dictionary: all the words together with their pronunciations. All vowel phonemes end in a 0, 1, or 2, with the digit indicating a level of syllabic stress. Consonant phonemes do not end in a digit. The number of syllables in a word is the same as the number of vowel sounds in the word, so you can determine the number of syllables in a word by counting the number of phonemes that end in a digit.As an example, in the word secondary (S EH1 K AH0 N D EH2 R IY0), there are 4 vowel phonemes, and therefore 4 syllables. The vowel phonemes are EH1, AH0, EH2, and IY0.In case you're curious, 0 means unstressed, 1 means primary stress, and 2 means secondary stress — try saying "secondary" out loud to hear for yourself which syllables have stress and which do not. In this assignment, your program will not need to distinguish between the levels of syllabic stress.The assignment zipfile includes the file pronunciation_dictionary.txt, which contains our version of the Pronouncing Dictionary. Your program will read this file. You must use it, and not any other versions of the CMU Pronouncing Dictionary, because our version differs slightly from the CMU version. We have removed alternate pronunciations for words, and we have removed words that do not start and end with alphanumeric characters (like #HASH-MARK, #POUND-SIGN and #SHARP-SIGN). Open the pronunciation_dictionary.txt file to see the format; notice that any line beginning with ;;; is a comment.The words in pronunciation_dictionary.txt are all uppercase and do not contain surrounding punctuation. When your program looks up a word, use the uppercase form, with no leading or trailing punctuation. Function transform_string() in the starter code file poetry_functions.py will be helpful here.We have also provided a small, three word CMU Pronouncing Dictionary named pronunciation_dictionary_small.txt, for use in docstring examples.Describing Poetry FormsFor each type of poetry form (limerick, haiku, etc.), we will write its rules as a poetry form. description. Here's our poetry form. description for the limerick poetry form.Limerick8 A8 A5 B5 B8 AOn each line, the first piece of information is a number that indicates the number of syllables required on that line of the poem. The second piece of information on each line is a rhyme label, a letter that indicates the pattern of end rhymes. Here, lines 1, 2, and 5 of a Limerick poem must rhyme with each other because they're all labeled with the same letter (A), and lines 3 and 4 must rhyme with each other because they're both labeled with the same letter (B). (Note that the choice to use the letters A and B was arbitrary. Other letters could have been used to describe this rhyme scheme.)Two lines of a poem rhyme with each other when the last syllable of the last word on each of the two lines rhyme. Two syllables rhyme when their vowels are the same and they end in the same sequence of consonant phonemes. For instance, the words gosh and wash are entered in pronunciation_dictionary.txt as GOSH G AA1 SH and WASH W AA1 SH respectively. Both end in the same vowel phoneme AA1 and the same consonant phoneme SH, so they rhyme. Another example of rhyming words is okay (OKAY OW2 K EY1) and overstay (OVERSTAY OW2 V ER0 S T EY1).Some poetry forms don't require lines that rhyme. For example, the haiku form. has 5 syllables in the first line, 7 in the second line, and 5 in the third line, but there are no rhyme requi代 写CSC108H Assignment 3: Poetry Form CheckerPython
+代做程序编程语言rements. Here is an example:Dan's hands are quiet.Soft peace surrounds him gently:No thought moves the air.We'll indicate the lack of a rhyme requirement by using the rhyme label *. Here is our poetry form. description for the haiku poetry form.Haiku5 *7 *5 *Some poetry forms have rhyme requirements but don't have a specified number of syllables per line. Quintain (English) is one such example; these are 5-line poems with an ABABB rhyme scheme, but with no syllable requirements. Here is our poetry form. description for the Quintain (English) poetry form. (notice that 0 is used to indicate that there is no requirement on the number of syllables in the line):Quintain (English)0 A0 B0 A0 B0 BHere's an example of a Quintain (English) from Percy Bysshe Shelly's Ode To A Skylark:Teach us, Sprite or Bird,What sweet thoughts are thine:I have never heardPraise of love or wineThat panted forth a flood of rapture so divine.Your program will read a poetry form. description file containing poetry form. names together with their description. For each poetry form. in the file:
+· the first line gives the name of the poetry form.
+· subsequent lines contain the number of syllables and rhyme scheme for each line of poetry
+· each poetry form. is separated from the next by a blank lineYou may assume that the poetry form. names given in a poetry form. description file will all be different.We have provided two poetry form. description files, poetry_forms.txt and poetry_forms_small.txt, as example poetry form. description files. The first is used by the Poetry Form. Checker program poetry_program.py while the second is used in doctest examples. We will test your code with these and other poetry form. description files.Note: Many poetry forms don't have a fixed number of lines. Instead, they specify what a stanza looks like, and then the poetry is made up of as many stanzas as the poet likes. We will not consider stanza-based poems in this assignment.Data RepresentationWe use the following Python definitions to create new types relevant to the problem domain. Read the comments in starter code file poetry_constants.py for detailed descriptions with examples.Type variables defined in poetry_constants.py
+POEM_LINE
+strPOEM
+list[POEM_LINE]PHONEMES
+tuple[str]PRONUNCIATION_DICT
+dict[str, PHONEMES]POETRY_FORM_DESCRIPTION
+tuple[tuple[int], tuple[str]]POETRY_FORM_DICT
+dict[str, POETRY_FORM_DESCRIPTION]Valid InputFor all poetry samples used in this assignment, you should assume that all words in the poems will appear as keys in the pronunciation dictionary. We will test with other pronunciation dictionaries, but we will always follow this rule.Task 1: Required Functions for Poetry ProcessingIn starter code file poetry_functions.py, complete the following function definitions. In addition, you may add some helper functions to aid with the implementation of these required functions.Function name:
+(Parameter types) -> Return typeFull Description (paraphrase to get a proper docstring description)
+get_syllable_count:
+(POEM_LINE, PRONUNCIATION_DICT) -> int
+The first parameter represents a non-empty line from a poem that has had leading and trailing whitespace removed. The second parameter represents a pronunciation dictionary. This function is to return the number of syllables in the line from the poem. The number of syllables in a poem line is the same as the number of vowel phonemes in the line.
+Assume that the pronunciation for every word in the line may be found in the pronunciation dictionary.
+HINT: Method str.split() and helper functions transform_string() and is_vowel_phoneme() may be helpful.
+check_syllable_counts:
+(POEM, POETRY_FORM_DESCRIPTION, PRONUNCIATION_DICT) ->
+list[POEM_LINE]
+The first parameter represents a poem that has no blank lines where each line has had leading and trailing whitespace removed. The second parameter represents a poetry form. description. And the third parameter represents a pronunciation dictionary. This function is to return a list of the lines from the poem that do not have the right number of syllables for the poetry form. description. The lines should appear in the returned list in the same order as they appear in the poem. If all lines have the right number of syllables, return the empty list. The number of syllables in a line is the same as the number of vowel phonemes in the line.
+Recall that every line whose required syllable count value is 0 has no syllable count requirement to meet.
+get_last_syllable:
+(PHONEMES) -> PHONEMES
+The parameter represents a tuple of phonemes. The function is to return a tuple that contains the last vowel phoneme and any consonant phoneme(s) that follow it in the given tuple of phonemes. The ordering of phonemes in the tuple returned must be the same as in the given tuple. Return an empty tuple if the tuple of phonemes does not contain a vowel phoneme.
+HINT: Helper function is_vowel_phoneme() may be helpful.
+words_rhyme:
+(str, str, PRONUNCIATION_DICT) -> bool
+The first and second parameters each represent a word. The third parameter represents a pronunciation dictionary. The function is to return whether or not the two words rhyme, according to the pronunciation dictionary.
+Assume that the pronunciation for both words may be found in the pronunciation dictionary.
+Recall that two words rhyme if and only if they have the same last syllable.
+all_lines_rhyme:
+(POEM, list[int], PRONUNCIATION_DICT) -> bool
+The first parameter represents a poem that has no blank lines and has had leading and trailing whitespace removed. The second parameter represents a list of poem line indexes. The third parameter represents a pronunciation dictionary. The function is to return whether or not each of the lines in the poem, whose index is in the list given by the second parameter, rhyme according to the pronunciation dictionary.
+Recall that two lines in a poem rhyme if and only if the last word on each line rhyme.
+Assume that the pronunciation for the words in the poem lines may be found in the pronunciation dictionary, and that the list of line indexes is not empty and only contains valid line indexes for the given poem.
+get_rhyme_label_to_lines:
+(tuple[str]) -> dict[str, list[int]]
+The first parameter represents a rhyme scheme, in the format of the second item in a POETRY_FORM_DESCRIPTION type. The function is to return a Python dict where each key is a rhyme label given in the rhyme scheme. The value associated with each key is a list of the indexes in the rhyme scheme where the rhyme label appears.
+Return an empty dictionary if the rhyme scheme is empty.
+check_rhyme_scheme:
+(POEM, POEM_FORM_DESCRIPTION, PRONUNCIATION_DICT) ->
+list[list[POEM_LINE]]
+The first parameter represents a poem that has no blank lines and has had leading and trailing whitespace removed. The second parameter represents a poetry form. description. And the third parameter represents a pronunciation dictionary. Return a list of lists of lines from the poem that do not rhyme according to the poetry form. description. If all lines rhyme as they should according to the poetry form, return an empty list.
+Recall that every line whose rhyme label is * has no rhyme requirement to meet.
+Notes:
+· The lines should appear in each inner list in the same order as they appear in the poem.
+· If n lines are supposed to rhyme with each other and at least one line does not, all n lines should appear in the inner list. For example:
+o if the rhyme scheme is ('A', 'A', 'B', 'B', 'A'),
+o and the poem lines are ['On the', 'plains, a', 'triceratops climbs.', 'The day adjourns.', 'Absurd!'],
+o this function should return either [['On the', 'plains, a', 'Absurd!'], ['triceratops climbs.', 'The day adjourns.']] or [['triceratops climbs.', 'The day adjourns.'], ['On the', 'plains, a', 'Absurd!']].
+         
+加QQ：99515681  WX：codinghelp  Email: 99515681@qq.com
